@@ -34,17 +34,18 @@ class MainController extends Controller
     //Function getting the login variables and using them for login validation by calling
     //the DBCheck function
     public function user(Request $req){
+    	$isInputValid = 0;
     	$email = $req->input('email');
     	$password = $req->input('password');
 
-    	$this->DBCheck($email, $password);
+    	$this->DBCheck($email, $password, $isInputValid);
 
-    	return redirect('/');
+		return redirect('/');
     }
 
     //Function validating the email checking if there is one email in the database
     //because i am not expecting repeating emails in the DB
-    public function DBCheck($email, $password){
+    public function DBCheck($email, $password, $inputCheck){
 		$checkEmail = DB::table('users')
     	->where('email', $email)
     	->count();
@@ -59,11 +60,11 @@ class MainController extends Controller
     			session()->put('user', [$email]);
     		}
     		else{
-    			echo 'Wrong email or password';
+    			echo 'Wrong password';
     		}
     	}
     	else{
-    		echo 'Wrong email or password';
+    		echo 'Wrong email';
     	}
     }
 
@@ -78,6 +79,21 @@ class MainController extends Controller
     //Function for inserting employee information into the database
     public function addEmployee(Request $req1){
     	$input = $req1->all();
+
+    	//Server-side validation if the fields are empty
+    	$validator = Validator::make($input, [
+    		'firstName' => 'required',
+    		'lastName' => 'required',
+    		'phoneNum' => 'required',
+    		'department' => 'required',
+    		'position' => 'required',
+    		'salary' => 'required'
+    	]);
+
+    	if ($validator->fails()) {
+    		return redirect()->back()->with('message', 'insertEmpty');
+    	}
+
     	Employee::insert(['firstName'=>$input['firstName'], 
     					'lastName'=>$input['lastName'],
     					'phoneNum'=>$input['phoneNum'],
@@ -85,9 +101,52 @@ class MainController extends Controller
     					'position'=>$input['position'],
     					'salary'=>$input['salary']]);
 
-    	print_r($input);
+    	return redirect()->back()->with('message', 'insertSucc');
+    }
 
-    	return redirect('information/addinfo');
+    //Function for redacting employee information in the database
+    public function redactEmp(Request $req2){
+    	$input = $req2->all();
 
+    	$validator = Validator::make($input, [
+    		'empId' => 'required',
+    		'firstName' => 'required',
+    		'lastName' => 'required',
+    		'phoneNum' => 'required',
+    		'department' => 'required',
+    		'position' => 'required',
+    		'salary' => 'required'
+    	]);
+
+    	if ($validator->fails()) {
+    		return redirect()->back()->with('message', 'redactEmpty');
+    	}
+
+    	Employee::where('id', '=', $input['empId'])
+    	->update(['firstName' => $input['firstName'],
+    				'lastName' => $input['lastName'],
+    				 'phoneNum' => $input['phoneNum'],
+    				  'department' => $input['department'],
+    					'position' => $input['position'],
+    					'salary' => $input['salary']]);
+
+    	return redirect()->back()->with('message', 'redactSucc');
+    }
+
+    //Function for deleting employee information by id
+    public function deleteEmp(Request $req3){
+    	$input = $req3->all();
+
+    	$validator = Validator::make($input, [
+            'empId' => 'required'
+        ]);
+		if ($validator->fails()) {
+    		return redirect()->back()->with('message', 'deleteEmpty');
+		}
+
+    	Employee::where('id', '=', $input['empId'])
+    	->delete();
+
+    	return redirect()->back()->with('message', 'deleteSucc');
     }
 }

@@ -20,6 +20,10 @@ Route::get('/', [MainController::class, 'home']);
 Route::post('/user', [MainController::class, 'user']);
 //Route for the post method for adding employee information
 Route::post('information/addEmployee', [MainController::class, 'addEmployee']);
+//Route for the post method for redacting employee information
+Route::post('information/redactEmp', [MainController::class, 'redactEmp']);
+//Route for the post method for deleting employee information
+Route::post('information/deleteEmp', [MainController::class, 'deleteEmp']);
 
 //Group of routes controlled by middleware to restrict routes if user is logged in
 Route::group(['middleware' => 'isLoggedIn'], function(){
