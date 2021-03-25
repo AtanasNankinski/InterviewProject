@@ -24,17 +24,13 @@
         <button type="submit" name="login" class="btn btn-primary">Submit</button>
       </form>
 
-      @if(session('message') == 'yes')
-      <div class="alert alert-success">
-        Succ
+      @if(session('message') == 'wrongEmail')
+      <div class="alert alert-danger">
+        Wrong Email adress!
       </div>
-      @elseif(session('message') == 'email')
-      <div class="alert alert-success">
-        Email
-      </div>
-      @elseif(session('message') == 'password')
-      <div class="alert alert-success">
-        Pass
+      @elseif(session('message') == 'wrongPass')
+      <div class="alert alert-danger">
+        Wrong password!
       </div>
       @endif
     </div>

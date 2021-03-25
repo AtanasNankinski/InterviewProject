@@ -31,22 +31,19 @@ class MainController extends Controller
     	return view('addinfo');
     }
 
-    //Function getting the login variables and using them for login validation by calling
-    //the DBCheck function
+    //Function for the login function
     public function user(Request $req){
-    	$isInputValid = 0;
+    	$input = $req->all();
+
+    	$validator = Validator::make($input, [
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+
     	$email = $req->input('email');
     	$password = $req->input('password');
 
-    	$this->DBCheck($email, $password, $isInputValid);
-
-		return redirect('/')->with('message', 'loggedIn');
-    }
-
-    //Function validating the email checking if there is one email in the database
-    //because i am not expecting repeating emails in the DB
-    public function DBCheck($email, $password, $inputCheck){
-		$checkEmail = DB::table('users')
+    	$checkEmail = DB::table('users')
     	->where('email', $email)
     	->count();
 
@@ -60,12 +57,14 @@ class MainController extends Controller
     			session()->put('user', [$email]);
     		}
     		else{
-    			echo 'Wrong password';
+    			return redirect('/login')->with('message', 'wrongPass');
     		}
     	}
     	else{
-    		echo 'Wrong email';
+    		return redirect('/login')->with('message', 'wrongEmail');
     	}
+
+		return redirect('/')->with('message', 'loggedIn');
     }
 
     //Functuon for the logout button which serves for stopping the session
