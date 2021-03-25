@@ -40,7 +40,7 @@ class MainController extends Controller
 
     	$this->DBCheck($email, $password, $isInputValid);
 
-		return redirect('/');
+		return redirect('/')->with('message', 'loggedIn');
     }
 
     //Function validating the email checking if there is one email in the database
@@ -73,7 +73,7 @@ class MainController extends Controller
     	
     	session()->pull('user');
 
-    	return redirect('/');
+    	return redirect('/')->with('message', 'loggedOut');
     }
 
     //Function for inserting employee information into the database

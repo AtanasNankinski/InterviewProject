@@ -5,7 +5,9 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-2">
-			
+			<div class="container-fluid mt-5">
+        <a class="add-button rounded-pill" href="information/addinfo">Add/Redact</a>
+      </div>
 		</div>
 		<div class="col-8">
 			<table class="table">
@@ -41,6 +43,5 @@
 	</div>
 </div>
 
-<a href="information/addinfo">Add/Redact</a>
 
 @endsection
